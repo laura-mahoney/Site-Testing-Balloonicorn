@@ -51,16 +51,23 @@ class PartyTestsDatabase(unittest.TestCase):
         db.create_all()
         example_data()
 
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess['RSVP'] = True
+
     def tearDown(self):
         """Do at end of every test."""
 
         # (uncomment when testing database)
-        # db.session.close()
-        # db.drop_all()
+        db.session.close()
+        db.drop_all()
 
     def test_games(self):
         #FIXME: test that the games page displays the game from example_data()
-        print "FIXME"
+
+        result = self.client.get("/games")
+        self.assertIn("Magicopoly", result.data)
+
 
 
 if __name__ == "__main__":
